@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_box"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_weight="1"
+        android:src="@drawable/avatar"
+        android:scaleType="fitCenter"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/monument_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Celebrity"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:textColor="@color/darkGray"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"/>
+
+        <TextView
+            android:id="@+id/monument_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Morocco, salé"
+            android:fontFamily="sans-ser/if-condensed"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/darkGray"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/monument_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1963"
+            android:fontFamily="sans-ser/if-condensed"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/darkGray"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+
+</LinearLayout>
