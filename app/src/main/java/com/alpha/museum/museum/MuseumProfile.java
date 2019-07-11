@@ -106,11 +106,14 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View v) {
                 if (fullScreenAccess == 0) {
+                    fullScreen.setBackgroundResource(R.drawable.less_white);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     ultraViewPager.setLayoutParams(params);
                     ultraViewPager.initIndicator();
                     fullScreenAccess = 1;
+
                 } else {
+                    fullScreen.setBackgroundResource(R.drawable.full_white);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
                     params.weight = 1;
                     ultraViewPager.setLayoutParams(params);
