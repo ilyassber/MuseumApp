@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.altbeacon:android-beacon-library-2.16.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-beacon-library-2.16.2.aar/16be59dc64e84ed4461230ab8721fff8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-beacon-library-2.16.2.aar/16be59dc64e84ed4461230ab8721fff8/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.altbeacon/android-beacon-library/2.16.2/4e7715e2fb36bd9c4139bf474df788bccbc49114/android-beacon-library-2.16.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

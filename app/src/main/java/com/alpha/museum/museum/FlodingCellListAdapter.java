@@ -1,18 +1,43 @@
 package com.alpha.museum.museum;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alpha.museum.museum.models.Category;
+import com.alpha.museum.museum.models.Image;
+import com.alpha.museum.museum.models.Monument;
+import com.alpha.museum.museum.preference.ManagePreference;
+import com.alpha.museum.museum.tools.StringFormat;
 import com.ramotion.foldingcell.FoldingCell;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.alpha.museum.museum.MainActivity.TAG;
 
 /**
  * Simple example of ListAdapter for using with Folding Cell
@@ -23,33 +48,42 @@ class FoldingCellListAdapter extends ArrayAdapter<Monument> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
+    private List<Monument> monuments;
+    private Monument monument;
+    private ViewHolder viewHolder;
+    private Context context;
 
     public FoldingCellListAdapter(Context context, List<Monument> objects) {
         super(context, 0, objects);
+        this.monuments = objects;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        Monument monument = getItem(position);
+        monument = monuments.get(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
-        ViewHolder viewHolder;
         if (cell == null) {
-            viewHolder = new ViewHolder();
-            LayoutInflater vi = LayoutInflater.from(getContext());
-            cell = (FoldingCell) vi.inflate(R.layout.monument, parent, false);
-            // binding view parts to view holder
-//            viewHolder.price = cell.findViewById(R.id.title_price);
-//            viewHolder.time = cell.findViewById(R.id.title_time_label);
-//            viewHolder.date = cell.findViewById(R.id.title_date_label);
-//            viewHolder.fromAddress = cell.findViewById(R.id.title_from_address);
-//            viewHolder.toAddress = cell.findViewById(R.id.title_to_address);
-//            viewHolder.requestsCount = cell.findViewById(R.id.title_requests_count);
-//            viewHolder.pledgePrice = cell.findViewById(R.id.title_pledge);
-            //viewHolder.contentRequestBtn = cell.findViewById(R.id.content_request_btn);
-            cell.setTag(viewHolder);
+                viewHolder = new ViewHolder();
+                LayoutInflater vi = LayoutInflater.from(getContext());
+                cell = (FoldingCell) vi.inflate(R.layout.monument, parent, false);
+                viewHolder.titleText1 = cell.findViewById(R.id.title_text_1);
+                viewHolder.titleText2 = cell.findViewById(R.id.title_text_2);
+                viewHolder.descriptionText1 = cell.findViewById(R.id.monument_description_1);
+                viewHolder.descriptionText2 = cell.findViewById(R.id.monument_description_2);
+                viewHolder.iconImage = cell.findViewById(R.id.icon_img);
+                viewHolder.headImage = cell.findViewById(R.id.head_image);
+                viewHolder.showMore = cell.findViewById(R.id.content_request_btn);
+                cell.setTag(viewHolder);
+                viewHolder.titleText1.setText(monument.getMonumentTitle());
+                viewHolder.titleText2.setText(monument.getMonumentTitle());
+                viewHolder.descriptionText1.setText(monument.getMonumentDescription());
+                viewHolder.descriptionText2.setText(monument.getMonumentDescription());
+                viewHolder.iconImage.setImageBitmap(monument.getImages().get(0).getImgBitmap());
+                viewHolder.headImage.setImageBitmap(monument.getImages().get(0).getImgBitmap());
         } else {
             // for existing cell set valid valid state(without animation)
             if (unfoldedIndexes.contains(position)) {
@@ -59,28 +93,6 @@ class FoldingCellListAdapter extends ArrayAdapter<Monument> {
             }
             viewHolder = (ViewHolder) cell.getTag();
         }
-
-        if (null == monument)
-            return cell;
-
-        // bind data from selected element to view through view holder
-
-//        viewHolder.price.setText(monument.getPrice());
-//        viewHolder.time.setText(monument.getTime());
-//        viewHolder.date.setText(monument.getDate());
-//        viewHolder.fromAddress.setText(monument.getFromAddress());
-//        viewHolder.toAddress.setText(monument.getToAddress());
-//        viewHolder.requestsCount.setText(String.valueOf(monument.getRequestsCount()));
-//        viewHolder.pledgePrice.setText(monument.getPledgePrice());
-
-        // set custom btn handler for list item from that item
-        if (monument.getRequestBtnClickListener() != null) {
-            //viewHolder.secondItem.setOnClickListener(monument.getRequestBtnClickListener());
-        } else {
-            // (optionally) add "default" handler if no handler found in item
-            //viewHolder.secondItem.setOnClickListener(defaultRequestBtnClickListener);
-        }
-
         return cell;
     }
 
@@ -110,13 +122,12 @@ class FoldingCellListAdapter extends ArrayAdapter<Monument> {
 
     // View lookup cache
     private static class ViewHolder {
-        TextView price;
-        TextView contentRequestBtn;
-        TextView pledgePrice;
-        TextView fromAddress;
-        TextView toAddress;
-        TextView requestsCount;
-        TextView date;
-        TextView time;
+        TextView titleText1;
+        TextView titleText2;
+        TextView descriptionText1;
+        TextView descriptionText2;
+        ImageView iconImage;
+        ImageView headImage;
+        TextView showMore;
     }
 }

@@ -4,6 +4,9 @@
     package="com.alpha.museum.museum">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -22,7 +25,22 @@
         </activity>
         <activity android:name=".MuseumProfile" />
         <activity android:name=".MonumentList" />
-        <service android:name=".ListeningService" />
+        <service android:name=".ListeningService"/>
+        <!--
+        <service android:name=".ListeningService" tools:node="replace">
+            <meta-data android:name="longScanForcingEnabled" android:value="true"/>
+        </service>
+        -->
+        <activity android:name=".MonumentProfile" />
+        <service
+            android:name="org.altbeacon.beacon.service.BeaconService"
+            android:enabled="true"
+            android:exported="true"
+            android:isolatedProcess="false"
+            android:label="beacon"></service>
+        <service
+            android:name="org.altbeacon.beacon.BeaconIntentProcessor"
+            android:enabled="true"></service>
     </application>
 
 </manifest>

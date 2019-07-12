@@ -3,7 +3,9 @@ package com.alpha.museum.museum.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
 
     @SerializedName("category_id")
     @Expose

@@ -56,7 +56,7 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         managePreference = new ManagePreference(getApplicationContext());
         MUSEUM_ID = managePreference.getSharedIntData("museum_id");
         museum = (Museum) getIntent().getSerializableExtra("museum");
-        mediaList = MonumentProfile.initMedia(museum);
+        mediaList = initMedia(museum);
 
         name = (TextView) findViewById(R.id.museum_profile_name);
         location = (TextView) findViewById(R.id.museum_location);
@@ -164,5 +164,18 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         ultraViewPager.setInfiniteLoop(true);
         //enable auto-scroll mode
         //ultraViewPager.setAutoScroll(2000);
+    }
+
+    public static ArrayList<Media> initMedia(Museum museum) {
+        ArrayList<Media> mediaList = new ArrayList<>();
+        for (int i = 0; i < museum.getVideos().size(); i++) {
+            Media media = new Media(1, null, museum.getVideos().get(i));
+            mediaList.add(media);
+        }
+        for (int i = 0; i < museum.getImages().size(); i++) {
+            Media media = new Media(2, museum.getImages().get(i), null);
+            mediaList.add(media);
+        }
+        return mediaList;
     }
 }

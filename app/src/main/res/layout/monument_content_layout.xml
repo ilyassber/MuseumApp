@@ -1,69 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="420dp"
-    android:orientation="vertical"
     android:background="@drawable/list_item_box"
+    android:orientation="vertical"
     android:visibility="gone">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/head_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="170dp"
+        android:scaleType="centerCrop"/>
 
-        <ImageView
-            android:id="@+id/head_image"
-            android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/girl_flying" />
-
-    </RelativeLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/title_text_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bgContent"
-        android:orientation="vertical"
-        android:paddingBottom="6dp"
+        android:text="Title"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/darkGray"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/monument_description_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="110dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="15dp"
+        android:maxLines="5"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/content_request_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/box_shadow_dark"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="9dp"
-        android:visibility="visible">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="9dp"
-            android:src="@color/contentDividerLine" />
-
-        <TextView
-            android:id="@+id/museum_description"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="15dp"
-            android:textSize="15dp"
-            android:text="@string/random_text"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="7dp"
-            android:src="@color/contentDividerLine" />
-
-        <TextView
-            android:id="@+id/content_request_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/btnRequest"
-            android:padding="10dp"
-            android:text="Show more"
-            android:textAlignment="center"
-            android:textColor="@color/mainTextColor"
-            android:textSize="20sp"
-            android:layout_marginBottom="10dp"/>
-
-    </LinearLayout>
-
+        android:paddingTop="7dp"
+        android:paddingBottom="10dp"
+        android:text="Show more"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 </LinearLayout>

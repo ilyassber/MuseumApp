@@ -88,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //createNotificationChannel();
+        createNotificationChannel();
 
-        //Intent intent = new Intent(this, ListeningService.class);
-        //startService(intent);
+        Intent intent = new Intent(this, ListeningService.class);
+
+        startService(intent);
 
         // get All Museums from Server
         requestQueue = Volley.newRequestQueue(this);
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getAllMuseumsFromServer() {
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://165.22.16.186/api/museums/all",
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://www.kdefaoui-camagru.tk/api/museums/all",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
