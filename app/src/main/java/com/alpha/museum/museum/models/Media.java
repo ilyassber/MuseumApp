@@ -7,11 +7,13 @@ public class Media implements Serializable {
     private int type;
     private Image image;
     private Video video;
+    private VRImage vrImage;
 
-    public Media (int type, Image image, Video video) {
+    public Media (int type, Image image, Video video, VRImage vrImage) {
         this.type = type;
         this.image = image;
         this.video = video;
+        this.vrImage = vrImage;
     }
 
     public int getType() {
@@ -36,5 +38,13 @@ public class Media implements Serializable {
 
     public void setVideo(Video video) {
         this.video = video;
+    }
+
+    public VRImage getVrImage() {
+        return vrImage;
+    }
+
+    public void setVrImage(VRImage vrImage) {
+        this.vrImage = vrImage;
     }
 }

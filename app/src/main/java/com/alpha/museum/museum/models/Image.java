@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import android.graphics.BitmapFactory;
 
 public class Image implements Serializable {
 

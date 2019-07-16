@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.PrecomputedText;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alpha.museum.museum.models.Media;
+import com.alpha.museum.museum.models.Monument;
 import com.alpha.museum.museum.models.Museum;
 import com.alpha.museum.museum.preference.ManagePreference;
 import com.gc.materialdesign.views.ButtonFlat;
@@ -30,7 +32,8 @@ import com.tmall.ultraviewpager.UltraViewPager;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MuseumProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener { //CompoundButton.OnCheckedChangeListener,
+public class MuseumProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+    private static final String TAG = "alpha_tag"; //CompoundButton.OnCheckedChangeListener,
 
     private int MUSEUM_ID = -1;
     private ManagePreference managePreference;
@@ -55,7 +58,9 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
 
         managePreference = new ManagePreference(getApplicationContext());
         MUSEUM_ID = managePreference.getSharedIntData("museum_id");
-        museum = (Museum) getIntent().getSerializableExtra("museum");
+        museum = (Museum) getIntent().getExtras().get(String.format("museum_%d", MUSEUM_ID));
+        if (museum == null)
+            Log.i(TAG, "onCreate: Museum is NULL id = " + MUSEUM_ID);
         mediaList = initMedia(museum);
 
         name = (TextView) findViewById(R.id.museum_profile_name);
@@ -64,8 +69,8 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         description = (TextView) findViewById(R.id.museum_description);
         fullScreen = (ImageButton) findViewById(R.id.full_screen);
 
-        Typeface light = Typeface.createFromAsset(getResources().getAssets(),"Font/Roboto/Roboto-Light.ttf");
-        Typeface medium = Typeface.createFromAsset(getResources().getAssets(),"Font/Roboto/Roboto-Medium.ttf");
+        Typeface light = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Light.ttf");
+        final Typeface medium = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Medium.ttf");
 
         name.setTypeface(light);
         location.setTypeface(medium);
@@ -79,22 +84,24 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String urlAddress = "http://maps.google.com/maps?q=" + museum.getGpsLocation() + "(" + museum.getCardTitle() + ")&iwloc=A&hl=es";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlAddress));
+                intent.setPackage("com.google.android.apps.maps");
+                //if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                //   startActivity(intent);
+                //}
+                /*
                 String uri = "https://goo.gl/maps/HYhG3i7h2SULCpHQ7";
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 intent.setPackage("com.google.android.apps.maps");
-                try
-                {
+                */
+                try {
                     startActivity(intent);
-                }
-                catch(ActivityNotFoundException ex)
-                {
-                    try
-                    {
-                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                } catch (ActivityNotFoundException ex) {
+                    try {
+                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlAddress));
                         startActivity(unrestrictedIntent);
-                    }
-                    catch(ActivityNotFoundException innerEx)
-                    {
+                    } catch (ActivityNotFoundException innerEx) {
                         innerEx.printStackTrace();
                         //Toast.makeText(this, "Please install a maps application", Toast.LENGTH_LONG).show();
                     }
@@ -168,13 +175,23 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
 
     public static ArrayList<Media> initMedia(Museum museum) {
         ArrayList<Media> mediaList = new ArrayList<>();
-        for (int i = 0; i < museum.getVideos().size(); i++) {
-            Media media = new Media(1, null, museum.getVideos().get(i));
-            mediaList.add(media);
+        if (museum.getVideos() != null) {
+            for (int i = 0; i < museum.getVideos().size(); i++) {
+                Media media = new Media(1, null, museum.getVideos().get(i), null);
+                mediaList.add(media);
+            }
         }
-        for (int i = 0; i < museum.getImages().size(); i++) {
-            Media media = new Media(2, museum.getImages().get(i), null);
-            mediaList.add(media);
+        if (museum.getImages() != null) {
+            for (int i = 0; i < museum.getImages().size(); i++) {
+                Media media = new Media(2, museum.getImages().get(i), null, null);
+                mediaList.add(media);
+            }
+        }
+        if (museum.getVrImages() != null) {
+            for (int i = 0; i < museum.getVrImages().size(); i++) {
+                Media media = new Media(3, null, null, museum.getVrImages().get(i));
+                mediaList.add(media);
+            }
         }
         return mediaList;
     }

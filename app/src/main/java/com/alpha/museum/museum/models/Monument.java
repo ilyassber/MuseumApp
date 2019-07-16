@@ -32,6 +32,9 @@ public class Monument implements Serializable {
     @SerializedName("videos")
     @Expose
     private ArrayList<Video> videos = new ArrayList<>();
+    @SerializedName("vr_images")
+    @Expose
+    private ArrayList<VRImage> vrImages = new ArrayList<>();
 
     public Integer getMonumentId() {
         return monumentId;
@@ -95,5 +98,13 @@ public class Monument implements Serializable {
 
     public void setVideos(ArrayList<Video> videos) {
         this.videos = videos;
+    }
+
+    public ArrayList<VRImage> getVrImages() {
+        return vrImages;
+    }
+
+    public void setVrImages(ArrayList<VRImage> vrImages) {
+        this.vrImages = vrImages;
     }
 }

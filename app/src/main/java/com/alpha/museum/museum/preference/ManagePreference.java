@@ -24,6 +24,7 @@ public class ManagePreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(id, data);
         editor.apply();
+        //editor.commit();
     }
 
     public String getSharedStringData (String id) {

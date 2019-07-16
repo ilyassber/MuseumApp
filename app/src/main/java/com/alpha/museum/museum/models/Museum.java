@@ -30,11 +30,15 @@ public class Museum implements ECCardData<String>, Serializable {
     @SerializedName("museum_description")
     @Expose
     private String museumDescription;
-
-    // list of images
-    private ArrayList<Image> images;
-    // list of videos
-    private ArrayList<Video> videos;
+    @SerializedName("images")
+    @Expose
+    private ArrayList<Image> images = new ArrayList<>();
+    @SerializedName("videos")
+    @Expose
+    private ArrayList<Video> videos = new ArrayList<>();
+    @SerializedName("vr_images")
+    @Expose
+    private ArrayList<VRImage> vrImages = new ArrayList<>();
 
     @Override
     public Integer getMuseumId() {
@@ -149,5 +153,13 @@ public class Museum implements ECCardData<String>, Serializable {
     @Override
     public List<String> getListItems() {
         return null;
+    }
+
+    public ArrayList<VRImage> getVrImages() {
+        return vrImages;
+    }
+
+    public void setVrImages(ArrayList<VRImage> vrImages) {
+        this.vrImages = vrImages;
     }
 }

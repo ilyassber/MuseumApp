@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alpha.museum.museum">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/etil"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/etil"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:node="replace">
@@ -25,22 +25,36 @@
         </activity>
         <activity android:name=".MuseumProfile" />
         <activity android:name=".MonumentList" />
-        <service android:name=".ListeningService"/>
+
+        <service android:name=".ListeningService" />
         <!--
         <service android:name=".ListeningService" tools:node="replace">
             <meta-data android:name="longScanForcingEnabled" android:value="true"/>
         </service>
         -->
         <activity android:name=".MonumentProfile" />
+        <activity android:name=".BeaconActivity" />
+        <activity android:name=".VRActivity"/>
+
         <service
             android:name="org.altbeacon.beacon.service.BeaconService"
-            android:enabled="true"
-            android:exported="true"
-            android:isolatedProcess="false"
-            android:label="beacon"></service>
+            tools:node="replace">
+            <meta-data
+                android:name="longScanForcingEnabled"
+                android:value="true" />
+        </service>
         <service
-            android:name="org.altbeacon.beacon.BeaconIntentProcessor"
-            android:enabled="true"></service>
+            android:name="org.altbeacon.beacon.service.ScanJob"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <meta-data
+                android:name="immediateScanJobId"
+                android:value="1000"
+                tools:replace="android:value" />
+            <meta-data
+                android:name="periodicScanJobId"
+                android:value="1001"
+                tools:replace="android:value" />
+        </service>
     </application>
 
 </manifest>

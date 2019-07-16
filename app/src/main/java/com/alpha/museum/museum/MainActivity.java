@@ -1,10 +1,18 @@
 package com.alpha.museum.museum;
 
-//import android.support.v7.app.AppCompatActivity;
-
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -17,7 +25,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,7 +38,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -38,6 +47,8 @@ import com.ramotion.expandingcollection.ECCardData;
 import com.ramotion.expandingcollection.ECPagerView;
 import com.ramotion.expandingcollection.ECPagerViewAdapter;
 
+import org.altbeacon.beacon.BeaconManager;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -46,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -54,49 +64,88 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static final String CHANNEL_ID = "listeningChannel";
 
-    public static String TAG = "#tag#";
+    public static String TAG = "alpha_tag";
 
     private ECPagerView ecPagerView;
+    private LinearLayout progressLayer;
     private List<ECCardData> dataset;
     Bitmap bitmap = null;
     Bitmap bitmap2 = null;
-    private List<Museum> museumsList;
+    public static List<Museum> museumsList;
     private RequestQueue requestQueue;
     private int pass = 0;
 
-    /*
-    private Thread thread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            while (pass != 0) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            afterLoading();
-        }
-    });
-    */
+    private ManagePreference managePreference;
+    private int permissions = 0;
+
+    //beacons
+
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    private final String BEACON_UUID = "00001111-0000-1111-0000-111100001111";
+    private final int BEACON_MAJOR = 0;
+
+    private BeaconManager beaconManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         createNotificationChannel();
 
-        Intent intent = new Intent(this, ListeningService.class);
+        //startActivity(new Intent(this, BeaconActivity.class));
 
-        startService(intent);
+        managePreference = new ManagePreference(getApplicationContext());
+        permissions = managePreference.getSharedIntData("permissions");
+        progressLayer = (LinearLayout) findViewById(R.id.progress_layer);
+
+        verifyBluetooth();
+
+        if (permissions != 1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Android M Permission check
+                if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    //final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    //builder.setTitle("This app needs location access");
+                    //builder.setMessage("Please grant location access so this app can detect beacons in the background.");
+                    //builder.setPositiveButton(android.R.string.ok, null);
+                    //builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                    //@TargetApi(23)
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_COARSE_LOCATION);
+                    //@Override
+                    //public void onDismiss(DialogInterface dialog) {
+
+                    //}
+                //}
+                    //builder.show();
+                }
+            }
+            managePreference.shareIntData("permissions", 1);
+            Log.i(TAG, "onCreate: Permissions = " + permissions);
+        }
+
+        //beaconInit();
 
         // get All Museums from Server
         requestQueue = Volley.newRequestQueue(this);
         getAllMuseumsFromServer();
+
+        //Intent intent = new Intent(MainActivity.this, VRActivity.class);
+        //startActivity(intent);
+    }
+
+    void openService() {
+        if (!isServiceRunning(ListeningService.class.getName())) {
+            Intent intent = new Intent(this, ListeningService.class);
+            startService(intent);
+        }
     }
 
     private void getAllMuseumsFromServer() {
@@ -108,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 Gson gson = new GsonBuilder().create();
                                 museumsList = Arrays.asList(gson.fromJson(response, Museum[].class));
+                                if (permissions == 1) {
+                                    openService();
+                                }
                                 loadAllImagesAsBitmap();
                             } catch (Exception e) {
                                 Log.i(TAG, "Json PARSE EXception: " + e.getMessage());
@@ -129,8 +181,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadAllImagesAsBitmap() {
         for (int i = 0; i < museumsList.size(); i++) {
             final ArrayList<Image> imgList = museumsList.get(i).getImages();
-            for (int j = 0; j < imgList.size(); j++) {
-                final Image img = imgList.get(j);
+            final Image img = imgList.get(0);
                 pass--;
                 /*
                 ImageRequest ir = new ImageRequest(img.getImgPath(),
@@ -179,20 +230,19 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         });
-            }
         }
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel listeningChannel = new NotificationChannel(CHANNEL_ID, "inListening", NotificationManager.IMPORTANCE_DEFAULT);
+            @SuppressLint("WrongConstant") NotificationChannel listeningChannel = new NotificationChannel(CHANNEL_ID, "inListening", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(listeningChannel);
         }
     }
 
     void afterLoading() {
-        setContentView(R.layout.activity_main);
+        progressLayer.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
@@ -248,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                         managePreference.shareIntData("museum_id", museum.getMuseumId());
                         Log.i(TAG, "museum id = " + Integer.toString(museum.getMuseumId()));
                         Intent intent = new Intent(MainActivity.this, MuseumProfile.class);
-                        intent.putExtra("museum", museum);
+                        intent.putExtra(String.format("museum_%d", museum.getMuseumId()), museum);
                         startActivity(intent);
                     }
                 });
@@ -257,5 +307,93 @@ public class MainActivity extends AppCompatActivity {
 
         // Add background switcher to pager view
         ecPagerView.setBackgroundSwitcherView((ECBackgroundSwitcherView) findViewById(R.id.ec_bg_switcher_element));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "coarse location permission granted");
+                    managePreference.shareIntData("permissions", 1);
+                    openService();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                        }
+
+                    });
+                    builder.show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    private void verifyBluetooth() {
+
+        try {
+            if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Bluetooth not enabled");
+                builder.setMessage("Please enable bluetooth in settings and restart this application.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        //finish();
+                        //System.exit(0);
+                    }
+                });
+                builder.show();
+            }
+        }
+        catch (RuntimeException e) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Bluetooth LE not available");
+            builder.setMessage("Sorry, this device does not support Bluetooth LE.");
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    //finish();
+                    //System.exit(0);
+                }
+
+            });
+            builder.show();
+
+        }
+
+    }
+
+    public boolean isServiceRunning(String serviceClassName){
+        final ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
+            if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

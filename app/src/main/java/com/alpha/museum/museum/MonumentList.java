@@ -61,6 +61,7 @@ public class MonumentList extends AppCompatActivity {
 
     List<Monument> monuments;
     ListView theListView;
+    LinearLayout listProgressLayout;
 
     private FoldingCellListAdapter adapter = null;
 
@@ -75,6 +76,7 @@ public class MonumentList extends AppCompatActivity {
         monuments = new ArrayList<>();
         theListView = (ListView) findViewById(R.id.mainListView);
         adapter = new FoldingCellListAdapter(getApplicationContext(), monuments);
+        listProgressLayout = (LinearLayout) findViewById(R.id.list_progress_layer);
 
         getAllCategories();
     }
@@ -104,6 +106,7 @@ public class MonumentList extends AppCompatActivity {
                                                 Bitmap bitmap = BitmapFactory.decodeStream(input);
                                                 image.setImgBitmap(bitmap);
                                             } catch (IOException e) {
+                                                listProgressLayout.setVisibility(View.GONE);
                                                 Log.i(TAG, "Error on loading image !!!");
                                                 e.printStackTrace();
                                             }
@@ -121,6 +124,7 @@ public class MonumentList extends AppCompatActivity {
                                                     pass++;
                                                     Log.i(TAG, "Image Loaded !!!");
                                                     if (pass == 0) {
+                                                        listProgressLayout.setVisibility(View.GONE);
                                                         setListAdapter();
                                                     }
                                                 }
@@ -132,6 +136,7 @@ public class MonumentList extends AppCompatActivity {
                                             });
                                 }
                             } catch (Exception e) {
+                                listProgressLayout.setVisibility(View.GONE);
                                 e.printStackTrace();
                             }
                         }

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:font="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bgBackSideColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                 android:textAllCaps="true"
                 android:textColor="@color/darkGray"
                 android:textSize="25dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,15 +68,20 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp">
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/text_box_shadow">
 
                 <TextView
                     android:id="@+id/museum_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:textSize="15sp" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textSize="15sp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
             </ScrollView>
 
             <LinearLayout

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.alpha.museum.museum.models.Media;
 import com.alpha.museum.museum.tools.StringFormat;
+import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -47,6 +48,8 @@ public class UltraPagerAdapter extends PagerAdapter {
     private Lifecycle lifecycle;
     private ArrayList<Media> mediaList;
     final StringFormat stringFormat = new StringFormat();
+
+    private ImageLoaderTask backgroundImageLoaderTask;
 
     public UltraPagerAdapter(boolean isMultiScr, Context context, Lifecycle lifecycle, ArrayList<Media> mediaList) {
         this.isMultiScr = isMultiScr;
@@ -125,6 +128,24 @@ public class UltraPagerAdapter extends PagerAdapter {
                 }
             });
         }
+        else if (media.getType() == 3) {
+            linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.activity_vr, null);
+            VrPanoramaView panoWidgetView = linearLayout.findViewById(R.id.vr_view);
+            ImageLoaderTask task = backgroundImageLoaderTask;
+            if (task != null && !task.isCancelled()) {
+                // Cancel any task from a previous loading.
+                task.cancel(true);
+            }
+
+            // pass in the name of the image to load from assets.
+            VrPanoramaView.Options viewOptions = new VrPanoramaView.Options();
+            viewOptions.inputType = VrPanoramaView.Options.TYPE_MONO;
+
+            // create the task passing the widget view and call execute to start.
+            task = new ImageLoaderTask(panoWidgetView, viewOptions, media.getVrImage().getImgPath());
+            task.execute();
+            backgroundImageLoaderTask = task;
+        }
         else {
             linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.layout_child, null);
             ImageView imageView = (ImageView) linearLayout.findViewById(R.id.viewer_image);
@@ -145,6 +166,9 @@ public class UltraPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        if (backgroundImageLoaderTask != null) {
+            backgroundImageLoaderTask.cancel(true);
+        }
         LinearLayout view = (LinearLayout) object;
         container.removeView(view);
     }
