@@ -128,7 +128,8 @@ public class UltraPagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else if (media.getType() == 3) {
+        /*
+        else if (media.getType() == 2 && media.getImage().getIs360() == 1) {
             linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.activity_vr, null);
             VrPanoramaView panoWidgetView = linearLayout.findViewById(R.id.vr_view);
             ImageLoaderTask task = backgroundImageLoaderTask;
@@ -142,10 +143,11 @@ public class UltraPagerAdapter extends PagerAdapter {
             viewOptions.inputType = VrPanoramaView.Options.TYPE_MONO;
 
             // create the task passing the widget view and call execute to start.
-            task = new ImageLoaderTask(panoWidgetView, viewOptions, media.getVrImage().getImgPath());
+            task = new ImageLoaderTask(panoWidgetView, viewOptions, media.getImage().getImgPath());
             task.execute();
             backgroundImageLoaderTask = task;
         }
+        */
         else {
             linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.layout_child, null);
             ImageView imageView = (ImageView) linearLayout.findViewById(R.id.viewer_image);

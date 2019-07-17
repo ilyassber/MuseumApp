@@ -34,7 +34,8 @@
         -->
         <activity android:name=".MonumentProfile" />
         <activity android:name=".BeaconActivity" />
-        <activity android:name=".VRActivity"/>
+        <activity android:name=".VRActivity" />
+        <activity android:name=".Gallery360"/>
 
         <service
             android:name="org.altbeacon.beacon.service.BeaconService"

@@ -21,6 +21,9 @@ public class Image implements Serializable {
     @SerializedName("img_path")
     @Expose
     private String imgPath;
+    @SerializedName("is360")
+    @Expose
+    private Integer is360;
 
     private transient Bitmap imgBitmap;
 
@@ -63,5 +66,13 @@ public class Image implements Serializable {
 
     public void setImgBitmap(Bitmap imgBitmap) {
         this.imgBitmap = imgBitmap;
+    }
+
+    public Integer getIs360() {
+        return is360;
+    }
+
+    public void setIs360(Integer is360) {
+        this.is360 = is360;
     }
 }

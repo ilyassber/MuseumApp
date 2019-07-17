@@ -121,8 +121,8 @@ public class ListeningService extends Service implements BeaconConsumer, Locatio
                         startForeground(1, mNotification.build());
                     } else if (museum == null) {
                         if (listen == 0) {
-                            nearMuseum = null;
                             listen = 1;
+                            nearMuseum = null;
                             Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
                             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
                             mNotification.setContentTitle("onListening")

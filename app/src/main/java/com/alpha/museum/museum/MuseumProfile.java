@@ -22,14 +22,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alpha.museum.museum.models.Image;
 import com.alpha.museum.museum.models.Media;
 import com.alpha.museum.museum.models.Monument;
 import com.alpha.museum.museum.models.Museum;
 import com.alpha.museum.museum.preference.ManagePreference;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.gc.materialdesign.views.ButtonFlat;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tmall.ultraviewpager.UltraViewPager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class MuseumProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -39,6 +49,7 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
     private ManagePreference managePreference;
     private Museum museum;
     private ArrayList<Media> mediaList;
+    private RequestQueue requestQueue;
 
     UltraViewPager ultraViewPager;
     ButtonFlat showRoomBtn;
@@ -48,6 +59,7 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
     ImageButton locationBtn;
     TextView description;
     ImageButton fullScreen;
+    ButtonFlat gallery360;
 
     int fullScreenAccess = 0;
 
@@ -57,17 +69,48 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_museum_profile);
 
         managePreference = new ManagePreference(getApplicationContext());
+        requestQueue = Volley.newRequestQueue(this);
         MUSEUM_ID = managePreference.getSharedIntData("museum_id");
-        museum = (Museum) getIntent().getExtras().get(String.format("museum_%d", MUSEUM_ID));
-        if (museum == null)
+        museum = (Museum) getIntent().getSerializableExtra(String.format("museum_%d", MUSEUM_ID));
+        if (museum == null) {
             Log.i(TAG, "onCreate: Museum is NULL id = " + MUSEUM_ID);
-        mediaList = initMedia(museum);
+            try {
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://www.kdefaoui-camagru.tk/api/museum/" + MUSEUM_ID,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    Gson gson = new GsonBuilder().create();
+                                    museum = gson.fromJson(response, Museum.class);
+                                    init();
+                                } catch (Exception e) {
+                                    Log.i(TAG, "Json PARSE EXception: " + e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i(TAG, "Error : " + error);
+                    }
+                });
+                requestQueue.add(stringRequest);
+            } catch (Exception e) {
+                Log.i(TAG, "Exception getAllMuseumsFromServer() : " + e.getMessage());
+            }
+        }
+        else {
+            init();
+        }
+    }
 
+    void init() {
         name = (TextView) findViewById(R.id.museum_profile_name);
         location = (TextView) findViewById(R.id.museum_location);
         locationBtn = (ImageButton) findViewById(R.id.museum_location_gps);
         description = (TextView) findViewById(R.id.museum_description);
         fullScreen = (ImageButton) findViewById(R.id.full_screen);
+        gallery360 = (ButtonFlat) findViewById(R.id.gallery_360);
 
         Typeface light = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Light.ttf");
         final Typeface medium = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Medium.ttf");
@@ -78,6 +121,7 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         lifecycle = this.getLifecycle();
         showRoomBtn = (ButtonFlat) findViewById(R.id.show_room_button);
 
+        mediaList = initMedia(museum);
         name.setText(museum.getCardTitle());
         location.setText(String.format("%s, %s", museum.getCountry(), museum.getCity()));
         description.setText(museum.getDescription());
@@ -139,6 +183,19 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
                 startActivity(intent);
             }
         });
+
+        init_gallery360();
+    }
+
+    void init_gallery360 () {
+        gallery360.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MuseumProfile.this, Gallery360.class);
+                intent.putExtra("media", mediaList);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -181,15 +238,13 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
                 mediaList.add(media);
             }
         }
-        if (museum.getImages() != null) {
-            for (int i = 0; i < museum.getImages().size(); i++) {
+        for (int i = 0; i < museum.getImages().size(); i++) {
+            Image image = museum.getImages().get(i);
+            if (image.getIs360() == 0) {
                 Media media = new Media(2, museum.getImages().get(i), null, null);
                 mediaList.add(media);
-            }
-        }
-        if (museum.getVrImages() != null) {
-            for (int i = 0; i < museum.getVrImages().size(); i++) {
-                Media media = new Media(3, null, null, museum.getVrImages().get(i));
+            } else {
+                Media media = new Media(3, null, null, museum.getImages().get(i));
                 mediaList.add(media);
             }
         }

@@ -15,6 +15,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ndk {
+                abiFilters "armeabi", "armeabi-v7a", "x86"
+            }
         }
     }
 }
@@ -26,9 +29,18 @@ dependencies {
     implementation project(':ultraviewpager')
     implementation project(':androidbeaconlibrary')
 
-    implementation project(':gvr-android-sdk/libraries:common')
-    implementation project(':gvr-android-sdk/libraries:commonwidget')
-    implementation project(':gvr-android-sdk/libraries:panowidget')
+    //vr
+    //implementation project(':gvr-android-sdk/libraries:common')
+    //implementation project(':gvr-android-sdk/libraries:commonwidget')
+    //implementation project(':gvr-android-sdk/libraries:panowidget')
+    implementation 'com.google.android.exoplayer:exoplayer:r2.5.2'
+    implementation 'com.google.vr:sdk-base:1.180.0'
+    implementation 'com.google.vr:sdk-audio:1.180.0'
+    implementation 'com.google.vr:sdk-common:1.180.0'
+    implementation 'com.google.vr:sdk-commonwidget:1.180.0'
+    implementation 'com.google.vr:sdk-panowidget:1.180.0'
+    implementation 'com.google.vr:sdk-videowidget:1.180.0'
+    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 
     implementation 'com.android.support:design:28.0.3'
     implementation 'androidx.appcompat:appcompat:1.0.2'

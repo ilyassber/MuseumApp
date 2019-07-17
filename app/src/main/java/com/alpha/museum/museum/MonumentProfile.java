@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alpha.museum.museum.models.Image;
 import com.alpha.museum.museum.models.Media;
 import com.alpha.museum.museum.models.Monument;
 import com.alpha.museum.museum.models.Museum;
@@ -60,6 +61,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
     ImageButton fullScreen;
     ImageButton playPauseBtn;
     ImageButton stopBtn;
+    ButtonFlat gallery360;
 
     int fullScreenAccess = 0;
 
@@ -77,6 +79,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
         fullScreen = (ImageButton) findViewById(R.id.monument_full_screen);
         playPauseBtn = (ImageButton) findViewById(R.id.play_pause);
         stopBtn = (ImageButton) findViewById(R.id.stop);
+        gallery360 = (ButtonFlat) findViewById(R.id.gallery_360);
 
         Typeface light = Typeface.createFromAsset(getResources().getAssets(),"Font/Roboto/Roboto-Light.ttf");
 
@@ -127,6 +130,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
                                         defaultUltraViewPager(lifecycle);
                                         name.setText(monument.getMonumentTitle());
                                         description.setText(monument.getMonumentDescription());
+                                        init_gallery360();
                                     }
                                     Log.i(TAG, "onResponse: Notification Build !!");
                                 } catch (Exception e) {
@@ -149,6 +153,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
             defaultUltraViewPager(lifecycle);
             name.setText(monument.getMonumentTitle());
             description.setText(monument.getMonumentDescription());
+            init_gallery360();
         }
 
         playPauseBtn.setOnClickListener(new View.OnClickListener() {
@@ -183,6 +188,17 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
 
         //mediaList = initMedia(monument);
         //defaultUltraViewPager(lifecycle);
+    }
+
+    void init_gallery360 () {
+        gallery360.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MonumentProfile.this, Gallery360.class);
+                intent.putExtra("media", mediaList);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -224,12 +240,14 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
             mediaList.add(media);
         }
         for (int i = 0; i < monument.getImages().size(); i++) {
-            Media media = new Media(2, monument.getImages().get(i), null, null);
-            mediaList.add(media);
-        }
-        for (int i = 0; i < monument.getVrImages().size(); i++) {
-            Media media = new Media(3, null, null, monument.getVrImages().get(i));
-            mediaList.add(media);
+            Image image = monument.getImages().get(i);
+            if (image.getIs360() == 0) {
+                Media media = new Media(2, monument.getImages().get(i), null, null);
+                mediaList.add(media);
+            } else {
+                Media media = new Media(3, null, null, monument.getImages().get(i));
+                mediaList.add(media);
+            }
         }
         return mediaList;
     }
