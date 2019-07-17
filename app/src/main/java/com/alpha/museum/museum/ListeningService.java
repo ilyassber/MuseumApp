@@ -105,7 +105,8 @@ public class ListeningService extends Service implements BeaconConsumer, Locatio
                     if (museum != null && museum != nearMuseum) {
                         listen = 0;
                         nearMuseum = museum;
-                        managePreference.shareIntData("museum_id", nearMuseum.getMuseumId());
+                        managePreference.shareIntData("museum_id_n", nearMuseum.getMuseumId());
+                        managePreference.shareIntData("museum_id", -1);
                         Log.i(TAG, "museum id = " + Integer.toString(nearMuseum.getMuseumId()));
                         Intent intent = new Intent(getApplicationContext(), MuseumProfile.class);
                         intent.putExtra(String.format("museum_%d", nearMuseum.getMuseumId()), nearMuseum);

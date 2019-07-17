@@ -52,13 +52,13 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginRight="10dp"
-                        android:background="@drawable/stop"/>
+                        android:background="@drawable/stop_brown"/>
 
                     <ImageButton
                         android:id="@+id/play_pause"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/play"/>
+                        android:background="@drawable/play_brown"/>
                 </LinearLayout>
 
             </LinearLayout>

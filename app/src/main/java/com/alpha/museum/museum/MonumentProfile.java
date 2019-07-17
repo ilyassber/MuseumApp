@@ -3,7 +3,6 @@ package com.alpha.museum.museum;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.PagerAdapter;
-import wseemann.media.FFmpegMediaPlayer;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -161,13 +160,13 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
             public void onClick(View v) {
                 if (!playPause) {
                     if (!intialStage) {
-                        playPauseBtn.setBackgroundResource(R.drawable.pause);
+                        playPauseBtn.setBackgroundResource(R.drawable.pause_brown);
                         if (!mediaPlayer.isPlaying())
                             mediaPlayer.start();
                         playPause = true;
                     }
                 } else {
-                    playPauseBtn.setBackgroundResource(R.drawable.play);
+                    playPauseBtn.setBackgroundResource(R.drawable.play_brown);
                     if (mediaPlayer.isPlaying())
                         mediaPlayer.pause();
                     playPause = false;
@@ -182,7 +181,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
                     mediaPlayer.pause();
                 mediaPlayer.seekTo(0);
                 playPause = false;
-                playPauseBtn.setBackgroundResource(R.drawable.play);
+                playPauseBtn.setBackgroundResource(R.drawable.play_brown);
             }
         });
 
@@ -269,7 +268,7 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
                         // TODO Auto-generated method stub
                         intialStage = true;
                         playPause = false;
-                        playPauseBtn.setBackgroundResource(R.drawable.play);
+                        playPauseBtn.setBackgroundResource(R.drawable.play_brown);
                         mediaPlayer.stop();
                         mediaPlayer.reset();
                     }

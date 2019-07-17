@@ -127,28 +127,46 @@ public class UltraPagerAdapter extends PagerAdapter {
                     youTubePlayer.setVolume(100);
                 }
             });
-        }
-        /*
-        else if (media.getType() == 2 && media.getImage().getIs360() == 1) {
-            linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.activity_vr, null);
-            VrPanoramaView panoWidgetView = linearLayout.findViewById(R.id.vr_view);
-            ImageLoaderTask task = backgroundImageLoaderTask;
-            if (task != null && !task.isCancelled()) {
-                // Cancel any task from a previous loading.
-                task.cancel(true);
-            }
+        } else if (media.getType() == 3) {
+            linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.layout_child, null);
+            final ImageView imageView = (ImageView) linearLayout.findViewById(R.id.viewer_image);
+            Completable.fromAction(new Action() {
+                @Override
+                public void run() throws Exception {
+                    try {
+                        URL url = new URL(media.getVr().getImgPath());
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setDoInput(true);
+                        connection.connect();
+                        InputStream input = connection.getInputStream();
+                        Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                        media.getVr().setImgBitmap(myBitmap);
+                    } catch (IOException e) {
+                        Log.i(TAG, "Error on loading image !!!");
+                        e.printStackTrace();
+                    }
+                }
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
 
-            // pass in the name of the image to load from assets.
-            VrPanoramaView.Options viewOptions = new VrPanoramaView.Options();
-            viewOptions.inputType = VrPanoramaView.Options.TYPE_MONO;
+                        @Override
+                        public void onComplete() {
+                            imageView.setImageBitmap(media.getVr().getImgBitmap());
+                        }
 
-            // create the task passing the widget view and call execute to start.
-            task = new ImageLoaderTask(panoWidgetView, viewOptions, media.getImage().getImgPath());
-            task.execute();
-            backgroundImageLoaderTask = task;
-        }
-        */
-        else {
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+            imageView.setImageBitmap(media.getVr().getImgBitmap());
+            linearLayout.setId(R.id.item_id);
+        } else {
             linearLayout = (LinearLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.layout_child, null);
             ImageView imageView = (ImageView) linearLayout.findViewById(R.id.viewer_image);
             imageView.setImageDrawable(context.getDrawable(R.drawable.dark_layer));

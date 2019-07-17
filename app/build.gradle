@@ -7,12 +7,14 @@ android {
         applicationId "com.alpha.museum.museum"
         minSdkVersion 21
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+            //shrinkResources true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ndk {
@@ -68,5 +70,5 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     //audio
-    implementation 'com.github.wseemann:FFmpegMediaPlayer:1.0.4'
+    //implementation 'com.github.wseemann:FFmpegMediaPlayer:1.0.4'
 }

@@ -71,6 +71,11 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         managePreference = new ManagePreference(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
         MUSEUM_ID = managePreference.getSharedIntData("museum_id");
+        if (MUSEUM_ID == -1)
+            MUSEUM_ID = managePreference.getSharedIntData("museum_id_n");
+        else
+            managePreference.shareIntData("museum_id", -1);
+        managePreference.shareIntData("museum_id_x", MUSEUM_ID);
         museum = (Museum) getIntent().getSerializableExtra(String.format("museum_%d", MUSEUM_ID));
         if (museum == null) {
             Log.i(TAG, "onCreate: Museum is NULL id = " + MUSEUM_ID);

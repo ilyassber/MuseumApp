@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Gallery360">
+    tools:context=".Gallery360"
+    android:layout_gravity="center"
+    android:gravity="center">
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:columnWidth="100dp"
+        android:columnWidth="150dp"
         android:numColumns="auto_fit"
         android:verticalSpacing="24dp"
         android:horizontalSpacing="10dp"
-        android:stretchMode="spacingWidthUniform"
         android:layout_margin="10dp"
-        />
+        android:layout_gravity="center"/>
 
 </LinearLayout>

@@ -72,7 +72,7 @@ public class MonumentList extends AppCompatActivity {
 
         managePreference = new ManagePreference(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
-        museumId = managePreference.getSharedIntData("museum_id");
+        museumId = managePreference.getSharedIntData("museum_id_x");
         monuments = new ArrayList<>();
         theListView = (ListView) findViewById(R.id.mainListView);
         adapter = new FoldingCellListAdapter(getApplicationContext(), monuments);
