@@ -3,18 +3,29 @@ package com.alpha.museum.museum;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.PagerAdapter;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,13 +41,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.widgets.ProgressDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tmall.ultraviewpager.UltraViewPager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static com.alpha.museum.museum.MainActivity.TAG;
@@ -60,13 +82,16 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
     ImageButton fullScreen;
     ImageButton playPauseBtn;
     ImageButton stopBtn;
-    ButtonFlat gallery360;
+    FancyButton gallery360;
+    FancyButton shareBtn;
+    ShareButton fbShareBtn;
 
     int fullScreenAccess = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_monument_profile);
 
         managePreference = new ManagePreference(getApplicationContext());
@@ -78,7 +103,9 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
         fullScreen = (ImageButton) findViewById(R.id.monument_full_screen);
         playPauseBtn = (ImageButton) findViewById(R.id.play_pause);
         stopBtn = (ImageButton) findViewById(R.id.stop);
-        gallery360 = (ButtonFlat) findViewById(R.id.gallery_360);
+        gallery360 = (FancyButton) findViewById(R.id.gallery_360);
+        shareBtn = (FancyButton) findViewById(R.id.share);
+        fbShareBtn = (ShareButton) findViewById(R.id.facebook_share);
 
         Typeface light = Typeface.createFromAsset(getResources().getAssets(),"Font/Roboto/Roboto-Light.ttf");
 
@@ -184,6 +211,15 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
                 playPauseBtn.setBackgroundResource(R.drawable.play_brown);
             }
         });
+
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share();
+            }
+        });
+
+        facebookShare();
 
         //mediaList = initMedia(monument);
         //defaultUltraViewPager(lifecycle);
@@ -320,5 +356,68 @@ public class MonumentProfile extends AppCompatActivity implements AdapterView.On
 //            mediaPlayer.release();
 //            mediaPlayer = null;
 //        }
+    }
+
+    void share() {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                try {
+                    URL url = new URL(monument.getImages().get(0).getImgPath());
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                    monument.getImages().get(0).setImgBitmap(myBitmap);
+                    Log.e(TAG, " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Bitmap is Loaded !");
+                } catch (IOException e) {
+                    Log.e(TAG, "Error on loading image !!! >>>>>>>>>>>>>>>>>>>>");
+                    e.printStackTrace();
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> On Complete");
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        //share.setType("image/jpeg");
+                        share.setType("text/plain");
+                        //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                        //monument.getImages().get(0).getImgBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                        //File f = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+                        //try {
+                        //    f.createNewFile();
+                        ///    FileOutputStream fo = new FileOutputStream(f);
+                        //    fo.write(bytes.toByteArray());
+                        //} catch (IOException e) {
+                        //    e.printStackTrace();
+                        //}
+                        //Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> On Complete");
+                        //share.putExtra(Intent.EXTRA_TITLE, monument.getMonumentTitle());
+                        share.putExtra(Intent.EXTRA_TEXT, monument.getMonumentDescription());
+                        //share.putExtra(Intent.EXTRA_STREAM, Uri.parse(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg"));
+                        startActivity(Intent.createChooser(share, "Share Monument"));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    void facebookShare() {
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+        fbShareBtn.setShareContent(content);
     }
 }

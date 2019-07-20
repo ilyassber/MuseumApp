@@ -18,10 +18,10 @@ public class MuseumScan {
         double mLongitude;
         for (int i = 0; i < museums.size(); i++) {
             Museum mMuseum = museums.get(i);
-            Log.i(TAG, "isInRange: My Location : " + altitude + "," + longitude);
+            //Log.i(TAG, "isInRange: My Location : " + altitude + "," + longitude);
             mAltitude = Double.parseDouble(mMuseum.getGpsLocation().split(",")[0]);
             mLongitude = Double.parseDouble(mMuseum.getGpsLocation().split(",")[1]);
-            Log.i(TAG, "isInRange: Museum Location : " + mAltitude + "," + mLongitude);
+            //Log.i(TAG, "isInRange: Museum Location : " + mAltitude + "," + mLongitude);
             if ((Math.abs(mAltitude - altitude) * 1000) < def1 && (Math.abs(mLongitude - longitude) * 1000) < def2) {
                 def1 = Math.abs(mAltitude - altitude) * 1000;
                 def2 = Math.abs(mLongitude - longitude) * 1000;

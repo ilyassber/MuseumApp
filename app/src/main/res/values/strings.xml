@@ -3,6 +3,7 @@
     <string name="title_activity_main">UltraViewPager</string>
     <string name="random_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec scelerisque augue lectus, quis commodo tortor tincidunt sit amet.</string>
 
+    <string name="facebook_app_id">389538055027444</string>
 
     <string name="order_id_mock" translatable="false"># 1234–5678</string>
     <string name="price_mock" translatable="false">$25</string>

@@ -27,12 +27,21 @@
         ec:cardWidth="250dp" >
     </com.ramotion.expandingcollection.ECPagerView>
 
+    <ImageButton
+        android:id="@+id/qr_scan"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/qr_scan"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"/>
+
     <LinearLayout
         android:id="@+id/progress_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@drawable/dark_layer">
+        android:background="@color/alignment_marker_color">
 
         <ProgressBar
             android:id="@+id/progressBar"

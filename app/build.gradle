@@ -26,11 +26,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation project(':expandingcollection')
     implementation project(':ultraviewpager')
     implementation project(':androidbeaconlibrary')
-
     //vr
     //implementation project(':gvr-android-sdk/libraries:common')
     //implementation project(':gvr-android-sdk/libraries:commonwidget')
@@ -43,14 +41,12 @@ dependencies {
     implementation 'com.google.vr:sdk-panowidget:1.180.0'
     implementation 'com.google.vr:sdk-videowidget:1.180.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-
     implementation 'com.android.support:design:28.0.3'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
@@ -65,10 +61,15 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.x.x'
     // Android Beacon Library
     //implementation 'org.altbeacon:android-beacon-library:2+'
-
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.annotation:annotation:1.1.0'
-
     //audio
     //implementation 'com.github.wseemann:FFmpegMediaPlayer:1.0.4'
+    //QR_code
+    implementation 'com.google.android.gms:play-services-vision:18.0.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    //facebook share
+    implementation 'com.facebook.android:facebook-share:5.1.1'
+    //fancyButton
+    implementation 'com.github.medyo:fancybuttons:1.9.1'
 }

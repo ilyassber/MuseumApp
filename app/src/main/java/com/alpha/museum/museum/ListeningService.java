@@ -100,7 +100,7 @@ public class ListeningService extends Service implements BeaconConsumer, Locatio
         public void run() {
             while (true) {
                 try {
-                    Log.i(TAG, "run: in Thread");
+                    //Log.i(TAG, "run: in Thread");
                     Museum museum = gpsMuseumScan();
                     if (museum != null && museum != nearMuseum) {
                         listen = 0;
@@ -223,7 +223,7 @@ public class ListeningService extends Service implements BeaconConsumer, Locatio
 
                 Beacon beacon = null;
 
-                //Log.i(TAG, "didRangeBeaconsInRegion: beacons size = " + beacons.size());
+                Log.i(TAG, "didRangeBeaconsInRegion: beacons size = " + beacons.size());
                 if (beacons.size() > 0) {
                     //Log.d(TAG, "didRangeBeaconsInRegion called with beacon count:  "+beacons.size());
                     //Beacon firstBeacon = beacons.iterator().next();
@@ -327,7 +327,7 @@ public class ListeningService extends Service implements BeaconConsumer, Locatio
                         if (location != null) {
                             double longitude = location.getLongitude();
                             double altitude = location.getLatitude();
-                            Log.i(TAG, "isInRange: My Location : " + altitude + "," + longitude);
+                            //Log.i(TAG, "isInRange: My Location : " + altitude + "," + longitude);
                             Museum museum = museumScan.isInRange(museumsList, altitude, longitude);
                             if (museum != null) {
                                 isNear = 1;

@@ -3,6 +3,7 @@ package com.alpha.museum.museum;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.PagerAdapter;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -52,14 +53,14 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
     private RequestQueue requestQueue;
 
     UltraViewPager ultraViewPager;
-    ButtonFlat showRoomBtn;
+    FancyButton showRoomBtn;
+    FancyButton gallery360;
     Lifecycle lifecycle;
     TextView name;
     TextView location;
     ImageButton locationBtn;
     TextView description;
     ImageButton fullScreen;
-    ButtonFlat gallery360;
 
     int fullScreenAccess = 0;
 
@@ -115,7 +116,8 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         locationBtn = (ImageButton) findViewById(R.id.museum_location_gps);
         description = (TextView) findViewById(R.id.museum_description);
         fullScreen = (ImageButton) findViewById(R.id.full_screen);
-        gallery360 = (ButtonFlat) findViewById(R.id.gallery_360);
+        gallery360 = (FancyButton) findViewById(R.id.gallery_360);
+        showRoomBtn = (FancyButton) findViewById(R.id.show_room_button);
 
         Typeface light = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Light.ttf");
         final Typeface medium = Typeface.createFromAsset(getResources().getAssets(), "Font/Roboto/Roboto-Medium.ttf");
@@ -124,7 +126,6 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         location.setTypeface(medium);
 
         lifecycle = this.getLifecycle();
-        showRoomBtn = (ButtonFlat) findViewById(R.id.show_room_button);
 
         mediaList = initMedia(museum);
         name.setText(museum.getCardTitle());

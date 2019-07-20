@@ -7,8 +7,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,13 +29,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alpha.museum.museum.models.Image;
+import com.alpha.museum.museum.models.Monument;
 import com.alpha.museum.museum.models.Museum;
 import com.alpha.museum.museum.preference.ManagePreference;
+import com.alpha.museum.museum.qrcode.QrCodeActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +48,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ramotion.expandingcollection.ECBackgroundSwitcherView;
 import com.ramotion.expandingcollection.ECCardData;
 import com.ramotion.expandingcollection.ECPagerView;
@@ -57,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.core.app.NotificationCompat;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -72,6 +81,7 @@ public class MainActivity extends Activity {
 
     private ECPagerView ecPagerView;
     private LinearLayout progressLayer;
+    private ImageButton qrScan;
     private List<ECCardData> dataset;
     Bitmap bitmap = null;
     Bitmap bitmap2 = null;
@@ -87,8 +97,13 @@ public class MainActivity extends Activity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private final String BEACON_UUID = "00001111-0000-1111-0000-111100001111";
     private final int BEACON_MAJOR = 0;
-
     private BeaconManager beaconManager;
+
+    //scanner
+
+    private NotificationCompat.Builder mNotification;
+    private Monument monument;
+    private int serial = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +112,14 @@ public class MainActivity extends Activity {
 
         createNotificationChannel();
 
-        //startActivity(new Intent(this, BeaconActivity.class));
+        //startActivity(new Intent(MainActivity.this, QrCodeActivity.class));
 
         managePreference = new ManagePreference(getApplicationContext());
         permissions = managePreference.getSharedIntData("permissions");
         progressLayer = (LinearLayout) findViewById(R.id.progress_layer);
+        qrScan = (ImageButton) findViewById(R.id.qr_scan);
+
+        mNotification = new NotificationCompat.Builder(this, CHANNEL_ID);
 
         verifyBluetooth();
 
@@ -136,6 +154,14 @@ public class MainActivity extends Activity {
         // get All Museums from Server
         requestQueue = Volley.newRequestQueue(this);
         getAllMuseumsFromServer();
+
+        qrScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
+                integrator.initiateScan();
+            }
+        });
 
         //Intent intent = new Intent(MainActivity.this, VRActivity.class);
         //startActivity(intent);
@@ -395,5 +421,83 @@ public class MainActivity extends Activity {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            if (scanResult.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                //Toast.makeText(this, "Scanned: " + scanResult.getContents(), Toast.LENGTH_LONG).show();
+                serial = Integer.parseInt(scanResult.getContents());
+                getMonument();
+            }
+        }
+    }
+
+    void getMonument() {
+        Log.i(TAG, "onResponse: Get Monument ??");
+        try {
+            String url = "https://www.kdefaoui-camagru.tk/api/monument/" + serial;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                Gson gson = new GsonBuilder().create();
+                                monument = gson.fromJson(response, Monument.class);
+                                Log.i(TAG, "onResponse: Monument Loaded !!");
+                                if (monument != null) {
+                                    managePreference.shareIntData("monument_id", monument.getMonumentId());
+                                    Intent intent = new Intent(MainActivity.this, MonumentProfile.class);
+                                    intent.putExtra(String.format("monument_%d", monument.getMonumentId()), monument);
+                                    startActivity(intent);
+                                    //buildNotification();
+                                    //Log.i(TAG, "onResponse: Notification Build !!");
+                                }
+                            } catch (Exception e) {
+                                Toast.makeText(MainActivity.this, "Invalid link !!", Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "Exception : " + e);
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i(TAG, "Error : " + error);
+                }
+            });
+            requestQueue.add(stringRequest);
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    void buildNotification() {
+        managePreference.shareIntData("monument_id", monument.getMonumentId());
+        Intent intent = new Intent(this, MonumentProfile.class);
+        intent.putExtra(String.format("monument_%d", monument.getMonumentId()), monument);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        /*
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(monument.getMonumentTitle())
+                .setContentText(monument.getMonumentDescription())
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .build();
+                */
+
+        mNotification.setSmallIcon(R.drawable.etil) // notification icon
+                .setContentTitle(monument.getMonumentTitle()) // title for notification
+                .setContentText(monument.getMonumentDescription()) // message for notification
+                .setAutoCancel(true) // clear notification after click
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(pendingIntent);
+
+        mNotification.build();
     }
 }

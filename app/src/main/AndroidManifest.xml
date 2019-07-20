@@ -7,6 +7,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <application
         android:allowBackup="true"
@@ -16,6 +21,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:node="replace">
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.alpha.museum.museum.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{389538055027444}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +56,9 @@
         <activity android:name=".MonumentProfile" />
         <activity android:name=".BeaconActivity" />
         <activity android:name=".VRActivity" />
-        <activity android:name=".Gallery360"/>
+        <activity android:name=".Gallery360" />
+        <activity android:name=".qrcode.QrCodeActivity"/>
+        <activity android:name="com.facebook.FacebookActivity"/>
 
         <service
             android:name="org.altbeacon.beacon.service.BeaconService"
@@ -56,6 +79,7 @@
                 android:value="1001"
                 tools:replace="android:value" />
         </service>
+        <activity android:name="com.journeyapps.barcodescanner.CaptureActivity"/>
     </application>
 
 </manifest>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="ExpandingCollection">
-        <attr format="dimension" name="cardWidth"/>
-        <attr format="dimension" name="cardHeight"/>
-        <attr format="dimension" name="cardHeaderHeightExpanded"/>
-    </declare-styleable>
-    <string name="app_name">expanding-collection</string>
-</resources>

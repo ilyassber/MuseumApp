@@ -7,6 +7,8 @@
     <color name="lightGray">#7b7b7b</color>
     <color name="transWhite">#b6ffffff</color>
     <color name="white">#e9e9e9</color>
+    <color name="clearWhite">#ffffff</color>
+    <color name="lightBlue">#1E88E5</color>
 
 
     <color name="bgBackSideColor">#f7f5f5</color>
