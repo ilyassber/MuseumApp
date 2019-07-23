@@ -16,7 +16,7 @@ import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 
-public class BeaconActivity extends Activity implements BeaconConsumer {
+class aBeaconActivity extends Activity implements BeaconConsumer {
     protected static final String TAG = "RangingActivity";
     private BeaconManager beaconManager;
 
@@ -69,7 +69,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     private void logToDisplay(final String line) {
         runOnUiThread(new Runnable() {
             public void run() {
-                EditText editText = (EditText)BeaconActivity.this.findViewById(R.id.rangingText);
+                EditText editText = (EditText) findViewById(R.id.rangingText);
                 editText.append(line+"\n");
             }
         });

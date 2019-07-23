@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
 
         createNotificationChannel();
 
-        //startActivity(new Intent(MainActivity.this, QrCodeActivity.class));
+        startActivity(new Intent(MainActivity.this, IndoorActivity.class));
 
         managePreference = new ManagePreference(getApplicationContext());
         permissions = managePreference.getSharedIntData("permissions");
