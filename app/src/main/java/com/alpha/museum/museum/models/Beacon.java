@@ -6,8 +6,13 @@ public class Beacon implements Serializable {
 
     private double x;
     private double y;
+    private double distance;
 
-    public void Beacon(double x, double y) {
+    public Beacon() {
+
+    }
+
+    public Beacon(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -26,5 +31,13 @@ public class Beacon implements Serializable {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.GridView;
 
+import com.alpha.museum.museum.Adapters.VRImagesAdapter;
 import com.alpha.museum.museum.models.Media;
 
 import java.util.ArrayList;

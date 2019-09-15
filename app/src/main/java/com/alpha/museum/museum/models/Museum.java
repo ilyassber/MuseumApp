@@ -129,7 +129,12 @@ public class Museum implements ECCardData<String>, Serializable {
 
     @Override
     public Bitmap getHeadBackgroundResourceBitmap() {
-        return getImages().get(0).getImgBitmap();
+        try {
+            return getImages().get(0).getImgBitmap();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.alpha.museum.museum;
+package com.alpha.museum.museum.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alpha.museum.museum.R;
+import com.alpha.museum.museum.VRActivity;
 import com.alpha.museum.museum.models.Media;
 import com.alpha.museum.museum.preference.ManagePreference;
 

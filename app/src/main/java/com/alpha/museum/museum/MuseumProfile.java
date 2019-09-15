@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.PagerAdapter;
 import mehdi.sakout.fancybuttons.FancyButton;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.PrecomputedText;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -63,6 +65,7 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
     ImageButton fullScreen;
 
     int fullScreenAccess = 0;
+    int quiz = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,54 @@ public class MuseumProfile extends AppCompatActivity implements AdapterView.OnIt
         }
         else {
             init();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        if (quiz == 1)
+            onBackPressed();
+        super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (quiz == 0) {
+            quiz = 1;
+            //before inflating the custom alert dialog layout, we will get the current activity viewgroup
+            ViewGroup viewGroup = findViewById(android.R.id.content);
+
+            //then we will inflate the custom alert dialog xml that we created
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.quiz_dialog, viewGroup, false);
+
+            FancyButton exitBtn = (FancyButton) dialogView.findViewById(R.id.exit);
+            exitBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+
+            FancyButton quizBtn = (FancyButton) dialogView.findViewById(R.id.quiz_ok);
+            quizBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MuseumProfile.this, QuizActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            //Now we need an AlertDialog.Builder object
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            //setting the view of the builder to our custom view that we already inflated
+            builder.setView(dialogView);
+
+            //finally creating the alert dialog and displaying it
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        } else if (quiz == 1) {
+            super.onBackPressed();
         }
     }
 

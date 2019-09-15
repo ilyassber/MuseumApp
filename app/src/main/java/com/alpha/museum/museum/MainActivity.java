@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
     private ECPagerView ecPagerView;
     private LinearLayout progressLayer;
     private ImageButton qrScan;
+    private ImageButton indoor;
     private List<ECCardData> dataset;
     Bitmap bitmap = null;
     Bitmap bitmap2 = null;
@@ -112,12 +113,11 @@ public class MainActivity extends Activity {
 
         createNotificationChannel();
 
-        startActivity(new Intent(MainActivity.this, IndoorActivity.class));
-
         managePreference = new ManagePreference(getApplicationContext());
         permissions = managePreference.getSharedIntData("permissions");
         progressLayer = (LinearLayout) findViewById(R.id.progress_layer);
         qrScan = (ImageButton) findViewById(R.id.qr_scan);
+        indoor = (ImageButton) findViewById(R.id.indoor);
 
         mNotification = new NotificationCompat.Builder(this, CHANNEL_ID);
 
@@ -160,6 +160,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
                 integrator.initiateScan();
+            }
+        });
+
+        indoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, IndoorActivity.class));
             }
         });
 

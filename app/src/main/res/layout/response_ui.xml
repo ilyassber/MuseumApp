@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto">
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/response_btn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingBottom="7dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="7dp"
+        fancy:fb_borderColor="@color/aquaBlue"
+        fancy:fb_borderWidth="1dp"
+        fancy:fb_defaultColor="@color/aquaBlue"
+        fancy:fb_focusColor="@color/lightGray"
+        fancy:fb_radius="5dp"
+        fancy:fb_text="Response"
+        fancy:fb_textColor="@color/clearWhite" />
+
+</LinearLayout>

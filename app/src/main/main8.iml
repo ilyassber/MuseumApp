@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="release2" level="project" />
+    <orderEntry type="library" name="release1" level="project" />
+    <orderEntry type="library" name="debug2" level="project" />
+    <orderEntry type="library" name="release" level="project" />
+    <orderEntry type="library" name="debug" level="project" />
+    <orderEntry type="library" name="debug1" level="project" />
+    <orderEntry type="module" module-name="androidTest" />
+    <orderEntry type="module" module-name="processReleaseResources" />
+    <orderEntry type="module" module-name="buildConfig1" />
+    <orderEntry type="module" module-name="buildConfig" />
+    <orderEntry type="module" module-name="main2" />
+    <orderEntry type="module" module-name="generateDebugRFile" />
+    <orderEntry type="module" module-name="main4" />
+    <orderEntry type="module" module-name="generateDebugRFile2" />
+    <orderEntry type="module" module-name="generateDebugRFile1" />
+    <orderEntry type="module" module-name="processDebugResources" />
+    <orderEntry type="module" module-name="main6" />
+    <orderEntry type="module" module-name="main7" />
+    <orderEntry type="module" module-name="generateReleaseRFile" />
+    <orderEntry type="module" module-name="androidTest1" />
+    <orderEntry type="module" module-name="test4" />
+    <orderEntry type="module" module-name="test3" />
+    <orderEntry type="module" module-name="generateReleaseRFile2" />
+    <orderEntry type="module" module-name="generateReleaseRFile1" />
+  </component>
+</module>

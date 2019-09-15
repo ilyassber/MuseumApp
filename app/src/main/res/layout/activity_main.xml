@@ -34,7 +34,16 @@
         android:background="@drawable/qr_scan"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="40dp"/>
+
+    <ImageButton
+        android:id="@+id/indoor"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/indoor"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"/>
 
     <LinearLayout
         android:id="@+id/progress_layer"
